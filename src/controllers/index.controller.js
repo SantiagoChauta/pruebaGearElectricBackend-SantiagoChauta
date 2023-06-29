@@ -1,6 +1,5 @@
 
 const { Pool } = require('pg')
-const { SlonikError } = require('slonik')
 
 const pool = new Pool({
     host:'localhost',
@@ -13,12 +12,15 @@ const pool = new Pool({
 
 const getTotal = async(req,res)=>{
     const response = await pool.query('select count(*) from asistente')
-    res.json(response.rows)
+    console.log(response);
+    res.json({
+        
+             total:response.rows[0].count
+    })
 }
 
 const getAsistentes = async(req,res) =>{
     const page = req.params.page
-
     const query = 'select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado from (select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado, row_number () over (order by apellido) from asistente) temp where row_number >$1 limit 10'
     const response = await pool.query(query,[page*10]);
     res.json(response.rows)
@@ -88,6 +90,7 @@ const updateAsistente = async(req,res)=>{
 }
 const patchAsistente = async(req,res)=>{
     const {tipoid,numid,estado} = req.params;
+
     await pool.query('update asistente set estado=$1 where tipodocumento=$2 and numerodocumento=$3',[estado,tipoid,numid])
     res.status(200).end() 
 
