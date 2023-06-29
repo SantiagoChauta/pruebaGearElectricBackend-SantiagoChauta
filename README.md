@@ -11,7 +11,7 @@ El comando para ejecutar el script es el siguiente
 \i ruta-al-proyecto/database/database.sql
 ```
 
-# Inicilizar servidor
+# Inicializar servidor
 Es necesario instalar los modulos de express y pg para que funcione correctamente, instalarlos mediante el siguiente comando
 
 ```
