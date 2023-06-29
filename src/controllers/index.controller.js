@@ -10,8 +10,17 @@ const pool = new Pool({
     port:'5432'
 })
 
+
+const getTotal = async(req,res)=>{
+    const response = await pool.query('select count(*) from asistente')
+    res.json(response.rows)
+}
+
 const getAsistentes = async(req,res) =>{
-    const response = await pool.query('select * from asistente')
+    const page = req.params.page
+
+    const query = 'select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado from (select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado, row_number () over (order by apellido) from asistente) temp where row_number >$1 limit 10'
+    const response = await pool.query(query,[page*10]);
     res.json(response.rows)
 
 }
@@ -91,6 +100,7 @@ const AsistenteDb ={
     getAsistentesByDocument,
     getAsistentesByName,
     getAsistentes,
+    getTotal,
     patchAsistente,
     saveAsistente,
     updateAsistente,

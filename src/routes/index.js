@@ -4,9 +4,11 @@ const router = Router()
 
 const AsistenteDb =require ('../controllers/index.controller')
 
-router.get('/asistentes', AsistenteDb.getAsistentes)
+router.get('/asistentes', AsistenteDb.getTotal)
 
-router.get('/asistentes/documento/:tipoid&:numid',AsistenteDb.getAsistentesByDocument)
+router.get('/asistentes/:page', AsistenteDb.getAsistentes)
+
+router.get('/asistentes/:tipoid&:numid',AsistenteDb.getAsistentesByDocument)
 
 router.get('/asistentes/email/:email',AsistenteDb.getAsistentesByEmail)
 
