@@ -11,7 +11,16 @@ El comando para ejecutar el script es el siguiente
 \i ruta-al-proyecto/database/database.sql
 ```
 
-En caso de que la base de datos no le permita correr el archivo directamente puede abrirlo copiar todo el contenido y pegarlo en la terminal
+En caso de que la base de datos no le permita correr el archivo directamente puede abrirlo copiar todo el contenido y pegarlo en la SQL Shell
+
+# Lenguaje utilizado
+
+El proyecto esta hecho utilizando unicamente javascript haciendo uso del modulo ```express``` para facilitar la creacion del servidor en el cual
+tendremos configurados nuestros endpoints.
+
+No se utiliza ningun ORM ya que es un servidor con un unico endpoint y la base de datos solo posee una tabla, por lo que se prefiere codificar las consultas a la
+base de datos como uno considere. 
+
 
 # instalacion de modulos necesarios
 Es necesario instalar los modulos de express, pg y cors para que funcione correctamente, instalarlos mediante el siguiente comando
@@ -53,3 +62,7 @@ una vez hechas las configuraciones anteriores y estando en la raiz del proyecto 
 ```
 node src/index.js
 ```
+
+# Nota
+De ser posible correr en el mismo host que el cliente para facilitar la conexión entre las aplicaciones
+
