@@ -8,11 +8,11 @@ router.get('/asistentes', AsistenteDb.getTotal)
 
 router.get('/asistentes/:page', AsistenteDb.getAsistentes)
 
-router.get('/asistentes/:tipoid&:numid',AsistenteDb.getAsistentesByDocument)
+router.get('/asistentes/document/:tipoid&:numid&:page',AsistenteDb.getAsistentesByDocument)
 
-router.get('/asistentes/email/:email',AsistenteDb.getAsistentesByEmail)
+router.get('/asistentes/email/:email&:page',AsistenteDb.getAsistentesByEmail)
 
-router.get('/asistentes/nombre/:nombre',AsistenteDb.getAsistentesByName)
+router.get('/asistentes/name/:nombre&:page',AsistenteDb.getAsistentesByName)
 
 router.post('/asistentes', AsistenteDb.saveAsistente)
 

@@ -12,7 +12,6 @@ const pool = new Pool({
 
 const getTotal = async(req,res)=>{
     const response = await pool.query('select count(*) from asistente')
-    console.log(response);
     res.json({
         
              total:response.rows[0].count
@@ -21,28 +20,42 @@ const getTotal = async(req,res)=>{
 
 const getAsistentes = async(req,res) =>{
     const page = req.params.page
-    const query = 'select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado from (select nombre,apellido,tipodocumento,numerodocumento,telefono,email,estado, row_number () over (order by apellido) from asistente) temp where row_number >$1 limit 10'
-    const response = await pool.query(query,[page*10]);
+    const response = await pool.query("select * from asistente order by apellido limit 10 offset $1",[page*10]);
     res.json(response.rows)
 
 }
 
 const getAsistentesByName=async(req,res)=>{
-    const nombre = req.params.nombre
-    const response = await pool.query('select * from asistente where lower(nombre||\' \'||apellido) like($1)',['%'+nombre+'%'])
-    res.json(response.rows)
+    const {nombre,page} = req.params
+    const response = await pool.query('select * from asistente where lower(nombre||\' \'||apellido) like($1) order by apellido limit 10 offset $2',['%'+nombre+'%',page*10])
+    const count = await pool.query('select count(*) from asistente where lower(nombre||\' \'||apellido) like($1)',['%'+nombre+'%'])
+
+    res.json({
+        filas:response.rows,
+        total:count.rows[0].count
+    })
 }
 
 const getAsistentesByDocument = async(req,res) =>{
-    const {tipoid,numid} = req.params;
-    const response = await pool.query('select * from asistente where tipodocumento=$1 and numerodocumento like($2)',[tipoid,numid+'%'])
-    res.json(response.rows)
+    const {tipoid,numid,page} = req.params;
+    const response = await pool.query('select * from asistente where tipodocumento=$1 and lower(numerodocumento) like($2) order by apellido limit 10 offset $3',[tipoid,numid+'%',page*10])
+    const count = await pool.query('select count(*) from asistente where tipodocumento=$1 and lower(numerodocumento) like($2)',[tipoid,numid+'%'])
+
+    res.json({
+        filas:response.rows,
+        total:count.rows[0].count
+    })
 }
 
 const getAsistentesByEmail=async(req,res)=>{
-    const email = req.params.email
-    const response = await pool.query('select * from asistente where lower(email) like($1)',['%'+email+'%'])
-    res.json(response.rows)
+    const {email,page} = req.params
+    const response = await pool.query('select * from asistente where lower(email) like($1) order by apellido limit 10 offset $2',['%'+email+'%',page*10])
+    const count = await pool.query('select count(*) from asistente where lower(email) like($1)',['%'+email+'%'])
+    
+    res.json({
+        filas:response.rows,
+        total:count.rows[0].count
+    })
 }
 
 const saveAsistente = (req,res) =>{
@@ -59,8 +72,8 @@ const saveAsistente = (req,res) =>{
         .then(response =>
             res.json({"message":"Asistente añadido con exito"})
         ).catch(
-            error => res.status(503).json({
-                "messageError":"El usuario con ese tipo y numero de documento ya existen"
+            error => res.status(200).json({
+                "messageError":error.detail
             })
         )
     
